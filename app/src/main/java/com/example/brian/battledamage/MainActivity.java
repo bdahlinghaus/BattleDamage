@@ -7,17 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.Random;
 
-import static com.example.brian.battledamage.R.id.experiencePoints;
-import static com.example.brian.battledamage.R.id.fbutton;
-
 public class    MainActivity extends AppCompatActivity {
-    Enemy myEnemy = new Enemy();
+    Enemy myEnemy;
     Player newPlayer = Player.getPlayerInstance();
 
-//    Button fbutton = (Button) findViewById(R.id.fbutton);
     TextView bossMessage;
     TextView bossHp;
     TextView experiencePoints;
@@ -28,18 +23,20 @@ public class    MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        // Attaches layout XML ID tag to TextView variable
         bossMessage = (TextView) findViewById(R.id.bossMessage);
         bossHp = (TextView) findViewById(R.id.bossHp);
         experiencePoints = (TextView) findViewById(R.id.experiencePoints);
         output = (TextView) findViewById(R.id.output);
 
-        bossMessage.setText(myEnemy.getName() + " has appeared!");
-        bossHp.setText(String.format("%d", myEnemy.getHealth()));
-        experiencePoints.setText(String.format("%d", newPlayer.getExp()));
+        // Spawn a new monster
+        spawnNewMonster();
 
+        // Show experience of player on load
+        updateExperienceView();
     }
 
+    // Battle Button
     protected void battle(View v) {
 
             myEnemy.health -= newPlayer.attack();
@@ -50,21 +47,34 @@ public class    MainActivity extends AppCompatActivity {
                 bossHp.setText(String.format("%d", myEnemy.getHealth()));
             }
             if (myEnemy.isDead()) {
-                Enemy oldEnemy = myEnemy;
-                myEnemy = new Enemy();
-                bossMessage.setText(myEnemy.getName() + " has appeared!");
-                newPlayer.gainExp();
-                experiencePoints.setText(String.format("%d", newPlayer.getExp()));
-                output.setText("You did " + newPlayer.attack() + " damage, and killed the " + oldEnemy.getName() + "!");
-            }
+                // Show nice message to the user congratulating them on their success
+                output.setText("You did " + newPlayer.attack() + " damage, and killed the " + myEnemy.getName() + "!");
 
+                // Gain XP
+                newPlayer.gainExp();
+                updateExperienceView();
+
+                // Spawn new monster to fight
+                spawnNewMonster();
+            }
     }
 
+    private void spawnNewMonster() {
+        myEnemy = new Enemy();
+        bossMessage.setText(myEnemy.getName() + " has appeared!");
+        bossHp.setText(String.format("%d", myEnemy.getHealth()));
+    }
+
+    private void updateExperienceView() {
+        experiencePoints.setText(String.format("%d", newPlayer.getExp()));
+    }
+    // END Battle Button
 
 
+    // Stats View
     protected void gotoStats(View v) {
         Intent intent = new Intent(this, characterStats.class);
         startActivity(intent);
-        }
+    }
 
 }

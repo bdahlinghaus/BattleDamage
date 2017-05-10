@@ -37,7 +37,7 @@ public class Enemy {
     }
 
     public boolean isHit(Player e) {
-        if (accuracy > Player.evasion) {
+        if (accuracy > e.evasion) {
             return true;
         } else {
             if (bhelper.randBetween(1, 8) > 5) {
