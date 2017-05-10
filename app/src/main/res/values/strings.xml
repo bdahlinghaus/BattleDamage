@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Battle Damage</string>
+    <string name="boss_hp">Boss HP:</string>
+</resources>
